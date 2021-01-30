@@ -2,6 +2,8 @@ package jm.task.core.jdbc;
 
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
+
+
 import java.sql.SQLException;
 
 public class Main {
@@ -14,6 +16,7 @@ public class Main {
         userService.saveUser("Petr", "Vasechkin", (byte) 52);
         System.out.println(userService.getAllUsers());
         userService.cleanUsersTable();
-        userService.dropUsersTable();// реализуйте алгоритм здесь
+        userService.dropUsersTable();
+        // реализуйте алгоритм здесь
     }
 }
