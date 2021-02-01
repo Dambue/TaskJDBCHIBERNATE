@@ -2,8 +2,10 @@ package jm.task.core.jdbc.util;
 
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import org.hibernate.service.ServiceRegistry;
 
 
 import java.sql.Connection;
@@ -23,16 +25,24 @@ public class Util {
     }
 
     public SessionFactory getSessionFactory() {
-            Configuration configuration = new Configuration();
-            Properties settings = new Properties();
-            settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-            settings.put(Environment.URL, "jdbc:mysql://127.0.0.1:3306/mydbtest?autoReconnect=true&useSSL=FALSE&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true");
-            settings.put(Environment.USER, "root");
-            settings.put(Environment.PASS, "1234");
-            settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
-            settings.put(Environment.SHOW_SQL, "true");
-            configuration.setProperties(settings).addAnnotatedClass(User.class);
-            sessionFactory = configuration.buildSessionFactory();
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
+                Properties settings = new Properties();
+                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.URL, "jdbc:mysql://127.0.0.1:3306/mydbtest?autoReconnect=true&useSSL=FALSE&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true");
+                settings.put(Environment.USER, "root");
+                settings.put(Environment.PASS, "1234");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
+                settings.put(Environment.SHOW_SQL, "true");
+                configuration.setProperties(settings).addAnnotatedClass(User.class);
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties()).build();
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            } catch (Exception e) {
+                System.err.println("Исключение" + e);
+            }
+        }
         return sessionFactory;
     }// реализуйте настройку соеденения с БД
 }
